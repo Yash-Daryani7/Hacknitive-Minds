@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "name": "Alice Johnson",
+    "email": "alice@company.com",
+    "age": 28,
+    "salary": 75000.50,
+    "score": 92,
+    "active": true,
+    "join_date": "2023-01-15",
+    "website": "https://alice.dev",
+    "discount": 15
+  },
+  {
+    "id": 2,
+    "name": "Bob Smith",
+    "email": "bob@company.com",
+    "age": 35,
+    "salary": 85000,
+    "score": 88,
+    "active": "yes",
+    "join_date": "15/02/2023",
+    "website": "https://bobsmith.io",
+    "discount": 20
+  },
+  {
+    "id": 3,
+    "name": "Charlie Brown",
+    "email": "CHARLIE@COMPANY.COM",
+    "age": 42,
+    "salary": 95000.75,
+    "score": 95,
+    "active": "1",
+    "join_date": "10-03-2023",
+    "discount": 10
+  },
+  {
+    "id": 4,
+    "name": "Diana Prince",
+    "email": "diana@company.com",
+    "age": 31,
+    "salary": 88000.25,
+    "score": 90,
+    "active": false,
+    "join_date": "2023-04-20",
+    "website": "https://diana.tech",
+    "rating": 4.5,
+    "discount": 25
+  }
+]

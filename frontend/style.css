@@ -1,0 +1,4 @@
+body { font-family: sans-serif; max-width: 700px; margin: auto; }
+input[type="file"] { margin: 10px 0; }
+button { padding: 7px 18px; }
+pre { background: #f8f8f8; padding: 10px; border-radius: 4px;}

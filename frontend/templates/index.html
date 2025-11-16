@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETL Pipeline - The Art of Intelligent Data Processing</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Premium Rolex-inspired palette */
+            --bg-dark: #0A0A0A;
+            --bg-darker: #000000;
+            --bg-card: #1A1A1A;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B4B4B4;
+            --text-tertiary: #6B6B6B;
+            --gold: #D4AF37;
+            --gold-light: #F4E5B8;
+            --gold-dark: #B8941F;
+            --accent-blue: #1E3A5F;
+            --accent-blue-light: #2A5082;
+            --border-gold: rgba(212, 175, 55, 0.3);
+            --border-subtle: rgba(255, 255, 255, 0.1);
+            --shadow-gold: 0 4px 20px rgba(212, 175, 55, 0.3);
+            --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* Premium Typography */
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        /* Navigation - Luxury Style */
+        .nav-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-subtle);
+            z-index: 1000;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-header.scrolled {
+            background: rgba(0, 0, 0, 0.98);
+            border-bottom: 1px solid var(--border-gold);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--gold);
+            text-decoration: none;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover {
+            color: var(--gold-light);
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .logo-accent {
+            color: var(--text-primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+
+        .nav-link:hover {
+            color: var(--gold);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold) 100%);
+            color: var(--bg-darker);
+            padding: 0.875rem 2rem;
+            border-radius: 2px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.85rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-gold);
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--gold);
+            padding: 0.875rem 2rem;
+            border-radius: 2px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border: 1.5px solid var(--gold);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .btn-secondary:hover {
+            background: var(--gold);
+            color: var(--bg-darker);
+            box-shadow: var(--shadow-gold);
+        }
+
+        /* Hero Section - Premium */
+        .hero-section {
+            margin-top: 0;
+            padding: 12rem 3rem 8rem;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+            transform: translateX(-50%);
+            pointer-events: none;
+        }
+
+        .hero-label {
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        .hero-title {
+            font-size: 5.5rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-title-accent {
+            color: var(--gold);
+            font-style: italic;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 720px;
+            margin: 0 auto 3.5rem;
+            line-height: 1.9;
+            font-weight: 300;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-bottom: 6rem;
+        }
+
+        /* Features Section - Luxury Grid */
+        .features-section {
+            max-width: 1400px;
+            margin: 0 auto 8rem;
+            padding: 6rem 3rem;
+            position: relative;
+        }
+
+        .features-header {
+            text-align: center;
+            margin-bottom: 5rem;
+        }
+
+        .section-label {
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .section-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .section-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            max-width: 680px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.5rem;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 3rem 2.5rem;
+            border-radius: 4px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--border-gold);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--gold);
+        }
+
+        .feature-description {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-size: 0.95rem;
+        }
+
+        /* Upload Section - Elegant */
+        .upload-section {
+            max-width: 1000px;
+            margin: 0 auto 6rem;
+            background: var(--bg-card);
+            border-radius: 4px;
+            border: 1px solid var(--border-gold);
+            padding: 4rem;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .upload-section:hover {
+            border-color: var(--gold);
+            box-shadow: var(--shadow-gold);
+        }
+
+        .upload-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 2rem;
+            background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+        }
+
+        .upload-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--gold);
+            text-align: center;
+        }
+
+        .upload-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            text-align: center;
+            font-size: 1.05rem;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+
+        input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .file-input-label {
+            display: inline-block;
+            padding: 1.25rem 3rem;
+            background: transparent;
+            border: 1.5px solid var(--border-gold);
+            border-radius: 2px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--gold);
+            transition: all 0.3s ease;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .file-input-label:hover {
+            background: var(--gold);
+            color: var(--bg-darker);
+            box-shadow: var(--shadow-gold);
+        }
+
+        .upload-btn {
+            margin-top: 1.5rem;
+            padding: 1.25rem 3rem;
+            font-size: 1rem;
+        }
+
+        /* Success Message - Elegant */
+        .alert-success {
+            max-width: 1000px;
+            margin: 0 auto 3rem;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%);
+            border-left: 3px solid var(--gold);
+            padding: 1.75rem 2rem;
+            border-radius: 4px;
+            color: var(--gold-light);
+            font-weight: 500;
+            font-size: 1.05rem;
+        }
+
+        /* Stats Cards - Luxury */
+        .stats-section {
+            max-width: 1400px;
+            margin: 0 auto 6rem;
+            padding: 0 3rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            padding: 3rem 2rem;
+            border-radius: 4px;
+            border: 1px solid var(--border-subtle);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gold);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--border-gold);
+            box-shadow: var(--shadow-gold);
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-value {
+            font-size: 4rem;
+            font-weight: 800;
+            color: var(--gold);
+            line-height: 1;
+            margin-bottom: 1rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .stat-card.warning .stat-value {
+            color: #F59E0B;
+        }
+
+        .stat-card.error .stat-value {
+            color: #EF4444;
+        }
+
+        /* Schema Section - Premium */
+        .schema-section {
+            max-width: 1400px;
+            margin: 0 auto 6rem;
+            padding: 0 3rem;
+        }
+
+        .section-header {
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .section-title-main {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--gold);
+        }
+
+        .section-subtitle-main {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        .schema-table-wrapper {
+            background: var(--bg-card);
+            border-radius: 4px;
+            border: 1px solid var(--border-subtle);
+            overflow: hidden;
+        }
+
+        .schema-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .schema-table thead {
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .schema-table th {
+            padding: 1.5rem 2rem;
+            text-align: left;
+            font-weight: 700;
+            color: var(--gold);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border-bottom: 1px solid var(--border-gold);
+        }
+
+        .schema-table td {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+        }
+
+        .schema-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .schema-table tbody tr:hover {
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        /* Type Badges - Elegant */
+        .type-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 2px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border: 1px solid;
+        }
+
+        .type-badge.integer {
+            background: rgba(37, 99, 235, 0.1);
+            color: #60A5FA;
+            border-color: rgba(96, 165, 250, 0.3);
+        }
+
+        .type-badge.float {
+            background: rgba(168, 85, 247, 0.1);
+            color: #C084FC;
+            border-color: rgba(192, 132, 252, 0.3);
+        }
+
+        .type-badge.string {
+            background: rgba(16, 185, 129, 0.1);
+            color: #34D399;
+            border-color: rgba(52, 211, 153, 0.3);
+        }
+
+        .type-badge.email {
+            background: rgba(251, 146, 60, 0.1);
+            color: #FB923C;
+            border-color: rgba(251, 146, 60, 0.3);
+        }
+
+        .type-badge.date {
+            background: rgba(236, 72, 153, 0.1);
+            color: #F472B6;
+            border-color: rgba(244, 114, 182, 0.3);
+        }
+
+        .type-badge.boolean {
+            background: rgba(20, 184, 166, 0.1);
+            color: #2DD4BF;
+            border-color: rgba(45, 212, 191, 0.3);
+        }
+
+        .type-badge.url {
+            background: rgba(14, 165, 233, 0.1);
+            color: #38BDF8;
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+
+        /* Sample Data - Code Block */
+        .sample-data {
+            background: #000000;
+            color: #E2E8F0;
+            padding: 2.5rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.9;
+            border: 1px solid var(--border-subtle);
+        }
+
+        /* Documentation Section - Luxury */
+        .docs-section {
+            max-width: 1400px;
+            margin: 0 auto 8rem;
+            padding: 6rem 3rem;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-gold);
+            border-bottom: 1px solid var(--border-gold);
+        }
+
+        .docs-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 4rem;
+            margin-top: 4rem;
+        }
+
+        .docs-card {
+            padding: 3rem;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-subtle);
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .docs-card:hover {
+            border-color: var(--border-gold);
+        }
+
+        .docs-card h3 {
+            font-size: 1.75rem;
+            color: var(--gold);
+            margin-bottom: 1.5rem;
+        }
+
+        .docs-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .docs-card li {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+            position: relative;
+            line-height: 1.8;
+        }
+
+        .docs-card li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--gold);
+            font-weight: bold;
+        }
+
+        /* Footer - Premium */
+        .footer {
+            background: var(--bg-darker);
+            border-top: 1px solid var(--border-gold);
+            padding: 4rem 3rem;
+            margin-top: 8rem;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--gold);
+            margin-bottom: 1.5rem;
+            display: inline-block;
+        }
+
+        .footer-tagline {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 3rem;
+            justify-content: center;
+            margin: 2.5rem 0;
+        }
+
+        .footer-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 500;
+        }
+
+        .footer-link:hover {
+            color: var(--gold);
+        }
+
+        .footer-copyright {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-subtle);
+            color: var(--text-tertiary);
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+        }
+
+        /* Changes Table */
+        .changes-section {
+            max-width: 1400px;
+            margin: 0 auto 6rem;
+            padding: 0 3rem;
+        }
+
+        .change-value-new {
+            color: #EF4444;
+            font-weight: 700;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .hero-title {
+                font-size: 4rem;
+            }
+
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .docs-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.8rem;
+            }
+
+            .section-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-cta {
+                flex-direction: column;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-container {
+                padding: 1.5rem 1.5rem;
+            }
+
+            .hero-section {
+                padding: 8rem 1.5rem 4rem;
+            }
+        }
+
+        /* Premium Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -1000px 0;
+            }
+            100% {
+                background-position: 1000px 0;
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            opacity: 0;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+
+        /* Scroll Reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Header -->
+    <nav class="nav-header" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                ETL<span class="logo-accent">Pipeline</span>
+            </a>
+            <div class="nav-links">
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#upload" class="nav-link">Upload</a>
+                <a href="#docs" class="nav-link">Documentation</a>
+                <a href="#upload" class="btn-primary">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-label fade-in-up">The Art of Data Processing</div>
+        <h1 class="hero-title fade-in-up delay-1">
+            Intelligence Meets <br>
+            <span class="hero-title-accent">Elegance</span>
+        </h1>
+        <p class="hero-subtitle fade-in-up delay-2">
+            Experience the finest in automated data transformation. Our AI-powered ETL pipeline
+            adapts to your data with the precision of a master craftsman and the intelligence of tomorrow.
+        </p>
+        <div class="hero-cta fade-in-up delay-3">
+            <a href="#upload" class="btn-primary">Begin Your Journey</a>
+            <a href="#features" class="btn-secondary">Discover Features</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section reveal">
+        <div class="features-header">
+            <div class="section-label">Excellence in Every Detail</div>
+            <h2 class="section-title">Unparalleled Capabilities</h2>
+            <p class="section-subtitle">
+                Nineteen meticulously crafted features that redefine what's possible in data processing
+            </p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="feature-icon">🧠</span>
+                <h3 class="feature-title">AI-Powered Intelligence</h3>
+                <p class="feature-description">
+                    Advanced type detection recognizes 8 distinct data types automatically.
+                    Integer, float, string, email, date, URL, boolean, and null—all identified with precision.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">📊</span>
+                <h3 class="feature-title">Dynamic Schema Inference</h3>
+                <p class="feature-description">
+                    Zero configuration required. Our system analyzes your data structure and creates
+                    an optimal schema that evolves with your needs.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">🔄</span>
+                <h3 class="feature-title">Schema Versioning</h3>
+                <p class="feature-description">
+                    Complete history of your schema evolution. Track every change, revert when needed,
+                    and understand how your data structure has transformed over time.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">🎯</span>
+                <h3 class="feature-title">Smart Deduplication</h3>
+                <p class="feature-description">
+                    Intelligent duplicate detection across identifier fields. Prevents redundancy
+                    while preserving data integrity across millions of records.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">🔔</span>
+                <h3 class="feature-title">Change Detection</h3>
+                <p class="feature-description">
+                    Real-time monitoring of critical field changes. Track price updates, score modifications,
+                    and rating changes with complete audit trails.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">⚡</span>
+                <h3 class="feature-title">Batch Processing</h3>
+                <p class="feature-description">
+                    Handle massive datasets with ease. Process 1000 records per batch for optimal
+                    performance and memory efficiency.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">🔐</span>
+                <h3 class="feature-title">Data Normalization</h3>
+                <p class="feature-description">
+                    Automatic standardization of dates, emails, and numbers. Ensures consistency
+                    and accuracy across your entire dataset.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">📈</span>
+                <h3 class="feature-title">Real-Time Analytics</h3>
+                <p class="feature-description">
+                    Instant statistics on record count, field detection, and type distribution.
+                    Understand your data at a glance with beautiful visualizations.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">🗄️</span>
+                <h3 class="feature-title">MongoDB Integration</h3>
+                <p class="feature-description">
+                    Seamless storage in three optimized collections: entries for data,
+                    schema_versions for evolution, and data_changes for audit trails.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">📁</span>
+                <h3 class="feature-title">Multi-Format Support</h3>
+                <p class="feature-description">
+                    Upload JSON or CSV files effortlessly. Automatic format detection and parsing
+                    handles both structured and semi-structured data.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">🎨</span>
+                <h3 class="feature-title">Elegant Interface</h3>
+                <p class="feature-description">
+                    Luxury-inspired design with smooth animations, premium typography, and an
+                    interface that makes data processing a pleasure.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">🚀</span>
+                <h3 class="feature-title">Production Ready</h3>
+                <p class="feature-description">
+                    Battle-tested code with comprehensive error handling, logging, and monitoring.
+                    Ready to deploy at enterprise scale.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Upload Section -->
+    <section id="upload" class="upload-section reveal">
+        <div class="upload-icon">📤</div>
+        <h2 class="upload-title">Upload Your Data</h2>
+        <p class="upload-subtitle">JSON, CSV, PDF & TXT • Maximum 50MB • AI-Powered Processing</p>
+
+        <form action="/" method="post" enctype="multipart/form-data" style="text-align: center;">
+            <div class="file-input-wrapper">
+                <input type="file" name="datafile" id="fileInput" accept=".json,.csv,.pdf,.txt" required>
+                <label for="fileInput" class="file-input-label">
+                    Select File
+                </label>
+            </div>
+            <br>
+            <button type="submit" class="btn-primary upload-btn">
+                Process & Analyze
+            </button>
+        </form>
+    </section>
+
+    {% if msg %}
+    <!-- Success Message -->
+    <div class="alert-success fade-in-up">
+        {{ msg }}
+    </div>
+    {% endif %}
+
+    {% if stats %}
+    <!-- Statistics Section -->
+    <section class="stats-section reveal">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.inserted_records }}</div>
+                <div class="stat-label">Records Processed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.total_fields }}</div>
+                <div class="stat-label">Fields Detected</div>
+            </div>
+            {% if schema_version %}
+            <div class="stat-card">
+                <div class="stat-value">v{{ schema_version }}</div>
+                <div class="stat-label">Schema Version</div>
+            </div>
+            {% endif %}
+            {% if stats.duplicates_removed > 0 %}
+            <div class="stat-card warning">
+                <div class="stat-value">{{ stats.duplicates_removed }}</div>
+                <div class="stat-label">Duplicates Skipped</div>
+            </div>
+            {% endif %}
+            {% if stats.changes_detected > 0 %}
+            <div class="stat-card error">
+                <div class="stat-value">{{ stats.changes_detected }}</div>
+                <div class="stat-label">Changes Detected</div>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+    {% endif %}
+
+    {% if schema %}
+    <!-- Schema Section -->
+    <section class="schema-section reveal">
+        <div class="section-header">
+            <h2 class="section-title-main">🔍 Inferred Schema</h2>
+            <p class="section-subtitle-main">AI-powered type detection with intelligent field analysis</p>
+        </div>
+
+        <div class="schema-table-wrapper">
+            <table class="schema-table">
+                <thead>
+                    <tr>
+                        <th>Field Name</th>
+                        <th>Detected Type</th>
+                        <th>Sample Values</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for field_name, field_info in schema.items() %}
+                    <tr>
+                        <td><strong>{{ field_name }}</strong></td>
+                        <td>
+                            <span class="type-badge {{ field_info.type }}">
+                                {{ field_info.type }}
+                            </span>
+                        </td>
+                        <td><code>{{ field_info.sample_values[:2] | join(', ') }}</code></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div style="margin-top: 4rem;">
+            <div class="section-header">
+                <h3 class="section-title-main" style="font-size: 1.8rem;">📝 Sample Processed Data</h3>
+                <p class="section-subtitle-main">First 5 records (normalized and cleaned)</p>
+            </div>
+            <div class="sample-data">
+                {{ transformed | tojson(indent=2) }}
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    {% if changes %}
+    <!-- Changes Section -->
+    <section class="changes-section reveal">
+        <div class="section-header">
+            <h2 class="section-title-main">🔔 Change Detection</h2>
+            <p class="section-subtitle-main">Real-time tracking of field value changes</p>
+        </div>
+
+        <div class="schema-table-wrapper">
+            <table class="schema-table">
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Previous Value</th>
+                        <th>New Value</th>
+                        <th>Change Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for change in changes[:10] %}
+                    <tr>
+                        <td><strong>{{ change.field }}</strong></td>
+                        <td><code>{{ change.old_value }}</code></td>
+                        <td><code class="change-value-new">{{ change.new_value }}</code></td>
+                        <td><span class="type-badge url">{{ change.change_type }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if changes|length > 10 %}
+        <p style="text-align: center; margin-top: 2rem; color: var(--text-secondary); font-style: italic;">
+            Showing 10 of {{ changes|length }} changes • Complete history stored in MongoDB
+        </p>
+        {% endif %}
+    </section>
+    {% endif %}
+
+    <!-- Documentation Section -->
+    <section id="docs" class="docs-section reveal">
+        <div class="features-header">
+            <div class="section-label">Knowledge Base</div>
+            <h2 class="section-title">Documentation</h2>
+            <p class="section-subtitle">
+                Everything you need to master the art of intelligent data processing
+            </p>
+        </div>
+
+        <div class="docs-grid">
+            <div class="docs-card">
+                <h3>🚀 Quick Start</h3>
+                <ul>
+                    <li><strong>Upload your file:</strong> Click "Select File" and choose JSON or CSV</li>
+                    <li><strong>Automatic processing:</strong> Schema inference happens instantly</li>
+                    <li><strong>View results:</strong> See statistics, schema, and processed data</li>
+                    <li><strong>MongoDB storage:</strong> All data saved in 3 optimized collections</li>
+                    <li><strong>Zero configuration:</strong> No setup required, just upload and process</li>
+                </ul>
+            </div>
+
+            <div class="docs-card">
+                <h3>🔍 Type Detection</h3>
+                <ul>
+                    <li><strong>Integer:</strong> Whole numbers (42, -17, 0)</li>
+                    <li><strong>Float:</strong> Decimal numbers (3.14, -0.5, 99.99)</li>
+                    <li><strong>String:</strong> Text values ("Alice", "Product Name")</li>
+                    <li><strong>Email:</strong> Valid email addresses (user@example.com)</li>
+                    <li><strong>Date:</strong> ISO 8601 dates (2025-01-15T10:30:00Z)</li>
+                    <li><strong>URL:</strong> Web addresses (https://example.com)</li>
+                    <li><strong>Boolean:</strong> True/False values (true, false, yes, no)</li>
+                    <li><strong>Null:</strong> Empty or null values</li>
+                </ul>
+            </div>
+
+            <div class="docs-card">
+                <h3>📊 Features Overview</h3>
+                <ul>
+                    <li><strong>Schema versioning:</strong> Track evolution over time</li>
+                    <li><strong>Deduplication:</strong> Intelligent duplicate removal</li>
+                    <li><strong>Change detection:</strong> Monitor critical field updates</li>
+                    <li><strong>Batch processing:</strong> Handle large datasets efficiently</li>
+                    <li><strong>Data normalization:</strong> Standardize dates, emails, numbers</li>
+                    <li><strong>Real-time stats:</strong> Instant analytics on your data</li>
+                </ul>
+            </div>
+
+            <div class="docs-card">
+                <h3>🗄️ MongoDB Schema</h3>
+                <ul>
+                    <li><strong>entries:</strong> Your processed data records</li>
+                    <li><strong>schema_versions:</strong> Schema evolution history</li>
+                    <li><strong>data_changes:</strong> Complete audit trail of changes</li>
+                    <li><strong>Automatic indexing:</strong> Optimized for fast queries</li>
+                    <li><strong>Timestamps:</strong> Every record has creation time</li>
+                    <li><strong>Scalable:</strong> Designed for millions of records</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">ETLPipeline</div>
+            <p class="footer-tagline">Where intelligence meets elegance in data processing</p>
+
+            <div class="footer-links">
+                <a href="#features" class="footer-link">Features</a>
+                <a href="#upload" class="footer-link">Upload</a>
+                <a href="#docs" class="footer-link">Documentation</a>
+                <a href="#" class="footer-link">GitHub</a>
+                <a href="#" class="footer-link">API</a>
+                <a href="#" class="footer-link">Support</a>
+            </div>
+
+            <p class="footer-copyright">
+                © 2025 ETL Pipeline. Crafted with precision for the modern data professional.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // File input feedback
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const fileName = e.target.files[0]?.name;
+            if (fileName) {
+                const label = document.querySelector('.file-input-label');
+                label.textContent = '✓ ' + fileName;
+                label.style.borderColor = 'var(--gold)';
+                label.style.color = 'var(--gold)';
+                label.style.background = 'rgba(212, 175, 55, 0.1)';
+            }
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Navbar scroll effect
+        let lastScroll = 0;
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            const currentScroll = window.pageYOffset;
+
+            if (currentScroll > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+
+            lastScroll = currentScroll;
+        });
+
+        // Scroll reveal animation
+        const revealElements = document.querySelectorAll('.reveal');
+
+        const revealOnScroll = () => {
+            revealElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+
+                if (elementTop < windowHeight - 100) {
+                    element.classList.add('active');
+                }
+            });
+        };
+
+        window.addEventListener('scroll', revealOnScroll);
+        window.addEventListener('load', revealOnScroll);
+    </script>
+</body>
+</html>

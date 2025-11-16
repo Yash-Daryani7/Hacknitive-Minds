@@ -1,0 +1,6 @@
+[
+    {"name": "Alice", "score": 85},
+    {"user": "Bob", "city": "Pune"},
+    {"name": "Charlie", "skill": "Python", "score": 92},
+    {"email": "eve@mail.com", "user": "Eve"}
+]
