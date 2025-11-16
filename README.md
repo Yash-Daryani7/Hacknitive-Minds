@@ -573,8 +573,4 @@ Development Time:           48 hours
 [⬆ Back to Top](#-neural-ninjas---dynamic-etl-pipeline)
 
 </div>
-#   H a c k n i t i v e - M i n d s 
- 
- #   H a c k n i t i v e - M i n d s 
- 
- 
+#
